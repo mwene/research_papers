@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  ai-diagnostic-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ALERT_WEBHOOK_URL=${ALERT_WEBHOOK_URL:-}
+      - HISTORY_DB_PATH=/data/diagnosis_history.db
+    volumes:
+      - diagnostic_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Optional: run tests in CI
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python -m ai_diagnostic.test_comprehensive
+    profiles:
+      - test
+
+volumes:
+  diagnostic_data:
