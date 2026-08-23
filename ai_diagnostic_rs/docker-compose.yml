@@ -1,0 +1,30 @@
+services:
+  ai-diagnostic-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - HISTORY_DB_PATH=/data/diagnosis_history.db
+    volumes:
+      - diagnostic_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Optional: run tests in CI (docker compose --profile test run test)
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    command: cargo test --release
+    profiles:
+      - test
+
+volumes:
+  diagnostic_data:

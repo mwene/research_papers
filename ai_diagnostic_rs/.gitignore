@@ -1,0 +1,6 @@
+/target
+Cargo.lock.bak
+*.db
+*.csv
+.env
+reports/
