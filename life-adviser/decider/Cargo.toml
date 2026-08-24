@@ -1,0 +1,17 @@
+[package]
+name = "decider"
+version = "0.1.0"
+edition = "2021"
+description = "Reusable decision engine: five stochastic-control quantities in, act/wait/drop verdict plus advice out."
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+wasm-bindgen = { version = "0.2", optional = true }
+
+[features]
+default = ["wasm"]
+wasm = ["dep:wasm-bindgen"]
