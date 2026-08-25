@@ -9,7 +9,7 @@ and returns one of three verdicts:
 - **Let it go** — this path loses more than it wins
 
 It is built on the framework developed in *The Control Within*
-(`../ai/stochastic_control_theory_complete.pdf`): every decision shares one
+(`stochastic_control_theory.pdf`): every decision shares one
 skeleton — a state, actions, payoffs, a floor that must not be crossed, and a
 target worth reaching. The engine's sharpest edge is timing: across finance,
 medicine, logistics and control, **chosen actions succeed two-to-three times
