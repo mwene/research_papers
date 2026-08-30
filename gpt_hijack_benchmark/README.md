@@ -1,7 +1,7 @@
 # GPT-Hijack Open Benchmark Pilot
 
 Accompanying artifacts for the pilot evaluated in
-`../gpt_hijack_final.pdf` (Section 7 "Open Benchmark Pilot").
+`../how_to_hijack_gtp.pdf` (Section 7 "Open Benchmark Pilot").
 
 ## What this is
 
