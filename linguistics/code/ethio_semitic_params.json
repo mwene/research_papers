@@ -1,0 +1,12 @@
+{
+  "ethio_semitic": {
+    "retention_rate": 0.743,
+    "burst_correction": 1.0,
+    "sound_shifts": {
+      "ḥ": "h",
+      "ʿ": "",
+      "ġ": "g"
+    },
+    "description": "Ethio-Semitic (in-situ diversification, Amharic-Tigrinya calibration)"
+  }
+}

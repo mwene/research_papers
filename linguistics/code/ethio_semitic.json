@@ -1,0 +1,42 @@
+{
+  "Tigrinya": {
+    "I": "`ana",
+    "you": "nesxa",
+    "we": "nehna",
+    "one": "hada",
+    "two": "kelta",
+    "three": "salasta",
+    "four": "`arba`ta",
+    "five": "hamusta",
+    "father": "`abo",
+    "blood": "dam",
+    "dog": "kalbi"
+  },
+  "Amharic": {
+    "I": "`ena",
+    "you": "`anta",
+    "we": "eña",
+    "one": "`and",
+    "two": "hulat",
+    "three": "sost",
+    "four": "`arat",
+    "five": "`ammest",
+    "father": "`abbat",
+    "blood": "dam",
+    "dog": "wesa"
+  },
+  "Arabic":
+  {
+    "I": "`ana",
+    "you": "`inta",
+    "we": "`ihna",
+    "one": "wahad",
+    "two": "tnen",
+    "three": "talate",
+    "four": "`arba`a",
+    "five": "khamse",
+    "father": "`ab",
+    "blood": "dam",
+    "dog": "kalb"
+  }
+}
