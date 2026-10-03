@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture Theory - Analysis Interface</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; margin: 40px; line-height: 1.6; background: #f5f5f5; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; }
+        h2 { color: #34495e; margin-top: 30px; }
+        textarea, input, select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-family: inherit; }
+        button { background: #3498db; color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        button:hover { background: #2980b9; }
+        .result { background: #f8f9fa; padding: 15px; margin: 15px 0; border-left: 4px solid #3498db; border-radius: 4px; white-space: pre-wrap; }
+        .questions { background: #fff3cd; padding: 15px; margin: 15px 0; border-left: 4px solid #ffc107; border-radius: 4px; }
+        .principles { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .principle { background: #e8f4fd; padding: 10px; border-radius: 4px; }
+        label { font-weight: 600; color: #2c3e50; }
+        .agent { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Architecture Theory Analysis Interface</h1>
+        <p>Based on theory by <strong>Macharia Barii</strong>. 5 Principles: Function, Speed/Efficiency, Safety/Security, Scale/Capacity/Load, Aesthetics/Beauty/Symmetry.</p>
+        
+        <h2>1. Quick Query</h2>
+        <textarea id="query" placeholder="Describe a phenomenon, architecture, or ask a question about the theory..." rows="4"></textarea>
+        <textarea id="context" placeholder="Provide additional context (optional)..." rows="3"></textarea>
+        <button onclick="query()">Analyze</button>
+        <div id="queryResult" class="result" style="display:none;"></div>
+        <div id="questionsBox" class="questions" style="display:none;">
+            <strong>Need more information:</strong>
+            <div id="clarifyQuestions"></div>
+            <button onclick="askForClarification()">Get Clarification</button>
+        </div>
+        <div id="clarifyResult" class="result" style="display:none;"></div>
+        
+        <h2>2. Classify Phenomenon (Tool vs Game/Relation)</h2>
+        <div id="agents">
+            <div class="agent" data-agent="0">
+                <h3>Agent 1</h3>
+                <label>Name</label><input type="text" value="Agent1">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
+                    <label><input type="checkbox" name="hasPurpose"> Has own purpose</label>
+                    <label><input type="checkbox" name="hasPrivateInfo"> Has private info</label>
+                    <label><input type="checkbox" name="hasCommitment"> Commitment problems</label>
+                    <label><input type="checkbox" name="canBestRespond"> Can best respond</label>
+                    <label><input type="checkbox" name="isTuring"> Is Turing-complete</label>
+                </div>
+            </div>
+        </div>
+        <button onclick="addAgent()">Add Agent</button>
+        <button onclick="classify()">Classify</button>
+        <div id="classifyResult" class="result" style="display:none;"></div>
+        
+        <h2>3. Full Analysis</h2>
+        <textarea id="phenomenon" placeholder="Describe the phenomenon to analyze..." rows="3"></textarea>
+        <button onclick="analyzeFull()">Run Extended/Narrow Analysis</button>
+        <div id="fullResult" class="result" style="display:none;"></div>
+    </div>
+    
+    <script>
+        let agentCount = 1;
+        
+        async function query() {
+            const queryText = document.getElementById('query').value;
+            const context = document.getElementById('context').value;
+            const res = await fetch('/api/query', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({query: queryText, context: context, use_llm: true})
+            });
+            const data = await res.json();
+            document.getElementById('queryResult').style.display = 'block';
+            document.getElementById('queryResult').textContent = data.result;
+            if (data.needs_clarification) {
+                document.getElementById('questionsBox').style.display = 'block';
+                const qdiv = document.getElementById('clarifyQuestions');
+                qdiv.innerHTML = '<ul>' + data.clarification_questions.map(q => '<li>' + q + '</li>').join('') + '</ul>';
+            }
+        }
+        
+        async function askForClarification() {
+            const answers = document.getElementById('clarifyQuestions').textContent;
+            const res = await fetch('/api/clarify', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({question: 'Please synthesize based on answers', info: answers, use_llm: true})
+            });
+            const data = await res.json();
+            document.getElementById('clarifyResult').style.display = 'block';
+            document.getElementById('clarifyResult').textContent = data.result;
+        }
+        
+        async function classify() {
+            const agents = [];
+            for (let i = 0; i < agentCount; i++) {
+                const agentDiv = document.querySelector('.agent[data-agent="' + i + '"]');
+                agents.push({
+                    id: 'agent' + i,
+                    name: agentDiv.querySelector('input[type=text]').value,
+                    has_purpose: agentDiv.querySelector('input[name=hasPurpose]').checked,
+                    has_private_info: agentDiv.querySelector('input[name=hasPrivateInfo]').checked,
+                    has_commitment_problem: agentDiv.querySelector('input[name=hasCommitment]').checked,
+                    can_best_respond: agentDiv.querySelector('input[name=canBestRespond]').checked,
+                    is_turing_complete: agentDiv.querySelector('input[name=isTuring]').checked,
+                    utilities: {}
+                });
+            }
+            const res = await fetch('/api/classify', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(agents)
+            });
+            const data = await res.json();
+            document.getElementById('classifyResult').style.display = 'block';
+            document.getElementById('classifyResult').textContent = 
+                'Classification: ' + data.classification + '\n' +
+                'Mode: ' + data.mode + '\n' +
+                'Confidence: ' + (data.confidence*100).toFixed(1) + '%\n' +
+                'Rationale: ' + data.rationale + '\n\n' +
+                'Recommendations:\n' + data.recommendations.map(r => '- ' + r).join('\n');
+        }
+        
+        async function analyzeFull() {
+            const res = await fetch('/api/analyze', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    phenomenon: document.getElementById('phenomenon').value,
+                    agents: [],
+                    environment: {passive: [], active: []},
+                    use_llm: true
+                })
+            });
+            const data = await res.json();
+            document.getElementById('fullResult').style.display = 'block';
+            document.getElementById('fullResult').textContent = JSON.stringify(data, null, 2);
+        }
+        
+        function addAgent() {
+            agentCount++;
+            const container = document.getElementById('agents');
+            const div = document.createElement('div');
+            div.className = 'agent';
+            div.setAttribute('data-agent', agentCount-1);
+            div.innerHTML = `
+                <h3>Agent ${agentCount}</h3>
+                <label>Name</label><input type="text" value="Agent${agentCount}">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
+                    <label><input type="checkbox" name="hasPurpose"> Has own purpose</label>
+                    <label><input type="checkbox" name="hasPrivateInfo"> Has private info</label>
+                    <label><input type="checkbox" name="hasCommitment"> Commitment problems</label>
+                    <label><input type="checkbox" name="canBestRespond"> Can best respond</label>
+                    <label><input type="checkbox" name="isTuring"> Is Turing-complete</label>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+    </script>
+</body>
+</html>
