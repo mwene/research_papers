@@ -1,0 +1,12 @@
+[package]
+name = "civilization_analyzer"
+version = "1.0.0"
+edition = "2021"
+description = "Algorithmic analysis of civilizations as ledgers of reciprocal relations."
+
+[[bin]]
+name = "civilization_analyzer"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = 3
